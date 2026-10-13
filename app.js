@@ -37,8 +37,13 @@
     puzzleTabCount: document.getElementById("puzzle-tab-count"),
     puzzleStatus: document.getElementById("puzzle-status"),
     puzzleCaps: document.getElementById("puzzle-caps"),
+    tabGuide: document.getElementById("tab-guide"),
     tabPlay: document.getElementById("tab-play"),
     tabPuzzles: document.getElementById("tab-puzzles"),
+    boardWrap: document.getElementById("board-wrap"),
+    side: document.getElementById("side-panel"),
+    guidePanel: document.getElementById("guide-panel"),
+    btnGuidePlay: document.getElementById("btn-guide-play"),
     btnPuzzleHint: document.getElementById("btn-puzzle-hint"),
     btnPuzzleRetry: document.getElementById("btn-puzzle-retry"),
     btnPuzzleSolution: document.getElementById("btn-puzzle-solution"),
@@ -77,6 +82,7 @@
     expectPos: false,
     nnueLabel: "",
     mode: "play",
+    guideFrom: "play",
     posToken: 0,
     savedPlay: null,
     solved: new Set(),
@@ -496,10 +502,11 @@
     setEval(msg.eval);
     renderBoard();
     renderStatus();
-    if (state.mode === "puzzle") {
+    if (state.mode === "puzzle" || (state.mode === "guide" && state.guideFrom === "puzzle")) {
       afterPuzzlePos(fromMove, msg);
       return;
     }
+    if (state.mode === "guide") return;
     if (!state.analyzingOnce && !state.infinite) maybeEngineTurn();
   }
 
@@ -818,13 +825,35 @@
   }
 
   function setModeChrome(mode) {
-    const puzzle = mode === "puzzle";
     document.body.dataset.mode = mode;
-    el.tabPlay.setAttribute("aria-selected", puzzle ? "false" : "true");
-    el.tabPuzzles.setAttribute("aria-selected", puzzle ? "true" : "false");
-    el.playPanel.hidden = puzzle;
-    el.puzzlePanel.hidden = !puzzle;
-    el.evalCol.hidden = puzzle;
+    el.tabGuide.setAttribute("aria-selected", mode === "guide" ? "true" : "false");
+    el.tabPlay.setAttribute("aria-selected", mode === "play" ? "true" : "false");
+    el.tabPuzzles.setAttribute("aria-selected", mode === "puzzle" ? "true" : "false");
+    el.playPanel.hidden = mode !== "play";
+    el.puzzlePanel.hidden = mode !== "puzzle";
+    el.guidePanel.hidden = mode !== "guide";
+    el.boardWrap.hidden = mode === "guide";
+    el.side.hidden = mode === "guide";
+    el.evalCol.hidden = mode !== "play";
+  }
+
+  function enterGuide() {
+    if (state.mode === "guide") return;
+    stopAnalysis();
+    hideMini();
+    if (state.mode === "puzzle") clearTimeout(state.puzzle.timer);
+    state.guideFrom = state.mode;
+    state.mode = "guide";
+    setModeChrome("guide");
+    setHash("#how");
+  }
+
+  function resumePuzzleView() {
+    state.mode = "puzzle";
+    setModeChrome("puzzle");
+    const i = state.puzzle.index >= 0 ? state.puzzle.index : 0;
+    setHash(puzzleList.length ? "#puzzles/" + (i + 1) : "#puzzles");
+    if (state.puzzle.phase === "reply") schedulePuzzlePly(420);
   }
 
   function renderPuzzleProgress() {
@@ -842,6 +871,12 @@
   }
 
   function enterPuzzles() {
+    if (state.mode === "guide" && state.guideFrom === "puzzle") {
+      state.mode = "puzzle";
+      setModeChrome("puzzle");
+      renderPuzzleProgress();
+      return;
+    }
     if (state.mode !== "puzzle") {
       stopAnalysis();
       hideMini();
@@ -859,6 +894,14 @@
   }
 
   function enterPlay() {
+    if (state.mode === "guide" && state.guideFrom !== "puzzle") {
+      state.mode = "play";
+      setModeChrome("play");
+      setHash("");
+      maybeEngineTurn();
+      return;
+    }
+    if (state.mode === "guide") state.mode = "puzzle";
     if (state.mode !== "puzzle") return;
     clearTimeout(state.puzzle.timer);
     state.puzzle.timer = 0;
@@ -1030,8 +1073,16 @@
 
   function applyHash() {
     const hash = location.hash || "";
+    if (hash === "#how") {
+      enterGuide();
+      return;
+    }
     if (hash === "#puzzles" || hash.startsWith("#puzzles/")) {
       const i = puzzleIndexFromHash(hash);
+      if (state.mode === "guide" && state.guideFrom === "puzzle" && (hash === "#puzzles" || i === state.puzzle.index)) {
+        resumePuzzleView();
+        return;
+      }
       enterPuzzles();
       if (puzzleList.length) openPuzzle(i);
       else {
@@ -1040,7 +1091,7 @@
       }
       return;
     }
-    if (state.mode === "puzzle") enterPlay();
+    if (state.mode === "puzzle" || state.mode === "guide") enterPlay();
   }
 
   function loadPuzzleFile() {
@@ -1065,9 +1116,15 @@
       });
   }
 
+  el.tabGuide.onclick = () => enterGuide();
+  el.btnGuidePlay.onclick = () => enterPlay();
   el.tabPlay.onclick = () => enterPlay();
   el.tabPuzzles.onclick = () => {
     if (state.mode === "puzzle") return;
+    if (state.mode === "guide" && state.guideFrom === "puzzle") {
+      resumePuzzleView();
+      return;
+    }
     enterPuzzles();
     if (puzzleList.length) openPuzzle(state.puzzle.index >= 0 ? state.puzzle.index : 0);
     else el.puzzleStatus.textContent = "Loading…";

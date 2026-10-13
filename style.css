@@ -345,6 +345,121 @@ button:disabled { opacity: 0.45; cursor: default; }
 .kfen-lab { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; color: var(--muted); }
 #kfen { width: 100%; font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; }
 
+.guide {
+  flex: 1 1 100%;
+  max-width: 40rem;
+}
+
+.guide h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.guide-lead {
+  margin: 0 0 1rem;
+}
+
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.steps > li {
+  counter-increment: step;
+  border: 1px solid var(--line);
+  background: #faf9f6;
+  padding: 0.75rem 0.9rem 0.85rem;
+}
+
+.steps > li h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.steps > li h3::before {
+  content: counter(step) ". ";
+}
+
+.steps p {
+  margin: 0 0 0.45rem;
+}
+
+.steps > li > p:last-child,
+.steps ul {
+  margin-bottom: 0;
+}
+
+.steps ul {
+  margin: 0.15rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.steps ul li {
+  margin: 0.15rem 0;
+}
+
+.demo { margin: 0.15rem 0 0.55rem; }
+
+.demo-board {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: min(100%, 220px);
+  aspect-ratio: 1;
+  background: var(--board);
+  border: 1px solid var(--board-line);
+}
+
+.demo-board .sq {
+  border-width: 1px;
+}
+
+.demo-board .marble {
+  width: 68%;
+  height: 68%;
+  display: block;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.legend .marble {
+  width: 0.95rem;
+  height: 0.95rem;
+  display: inline-block;
+}
+
+.guide-cta { margin: 1rem 0 0; }
+
+.guide-go {
+  background: var(--ink);
+  color: var(--white);
+  padding: 0.4rem 0.85rem;
+}
+
+.guide-go:hover {
+  background: #333;
+  color: var(--white);
+}
+
 [hidden] { display: none !important; }
 
 #puzzle-caps { margin: 0; color: var(--muted); font-size: 0.95rem; }

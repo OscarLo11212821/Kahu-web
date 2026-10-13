@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kahu</title>
-  <link rel="stylesheet" href="style.css?v=17" />
+  <link rel="stylesheet" href="style.css?v=18" />
 </head>
 <body>
   <header>
@@ -12,6 +12,7 @@
       <h1>Kahu</h1>
       <p class="sub">Kuba engine, in the browser</p>
       <nav class="tabs" aria-label="Sections">
+        <button type="button" id="tab-guide" class="tab" aria-selected="false">How to play</button>
         <button type="button" id="tab-play" class="tab" aria-selected="true">Play</button>
         <button type="button" id="tab-puzzles" class="tab" aria-selected="false">Puzzles <span id="puzzle-tab-count" class="tab-count"></span></button>
       </nav>
@@ -44,11 +45,11 @@
       <div id="eval-label" class="eval-label">0</div>
     </div>
 
-    <section class="board-wrap">
+    <section id="board-wrap" class="board-wrap">
       <div id="board" class="board" aria-label="Kuba board"></div>
     </section>
 
-    <aside>
+    <aside id="side-panel">
       <div id="play-panel">
       <p id="status" class="status">Loading engine…</p>
       <p id="caps">Reds — White 0 · Black 0</p>
@@ -121,9 +122,57 @@
         </div>
       </div>
     </aside>
+
+    <section id="guide-panel" class="guide" hidden>
+      <h2>How to play Kuba</h2>
+      <p class="guide-lead">Here is how Kuba is played, from the starting position through a single push and on to the ways a game can end.</p>
+      <ol class="steps">
+        <li>
+          <h3>The board</h3>
+          <p>Each player has eight marbles on a board of seven rows and seven columns. White starts in the top-left corner and the bottom-right corner, and Black starts in the other two, with thirteen red marbles in a diamond between them. The reds are neutral, so either player can push them, and White moves first.</p>
+          <div class="demo" aria-hidden="true">
+            <div class="demo-board">
+              <span class="sq"><i class="marble W"></i></span><span class="sq"><i class="marble W"></i></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"><i class="marble B"></i></span><span class="sq"><i class="marble B"></i></span>
+              <span class="sq"><i class="marble W"></i></span><span class="sq"><i class="marble W"></i></span><span class="sq"></span><span class="sq"><i class="marble R"></i></span><span class="sq"></span><span class="sq"><i class="marble B"></i></span><span class="sq"><i class="marble B"></i></span>
+              <span class="sq"></span><span class="sq"></span><span class="sq"><i class="marble R"></i></span><span class="sq"><i class="marble R"></i></span><span class="sq"><i class="marble R"></i></span><span class="sq"></span><span class="sq"></span>
+              <span class="sq"></span><span class="sq"><i class="marble R"></i></span><span class="sq"><i class="marble R"></i></span><span class="sq"><i class="marble R"></i></span><span class="sq"><i class="marble R"></i></span><span class="sq"><i class="marble R"></i></span><span class="sq"></span>
+              <span class="sq"></span><span class="sq"></span><span class="sq"><i class="marble R"></i></span><span class="sq"><i class="marble R"></i></span><span class="sq"><i class="marble R"></i></span><span class="sq"></span><span class="sq"></span>
+              <span class="sq"><i class="marble B"></i></span><span class="sq"><i class="marble B"></i></span><span class="sq"></span><span class="sq"><i class="marble R"></i></span><span class="sq"></span><span class="sq"><i class="marble W"></i></span><span class="sq"><i class="marble W"></i></span>
+              <span class="sq"><i class="marble B"></i></span><span class="sq"><i class="marble B"></i></span><span class="sq"></span><span class="sq"></span><span class="sq"></span><span class="sq"><i class="marble W"></i></span><span class="sq"><i class="marble W"></i></span>
+            </div>
+          </div>
+          <p class="legend"><span><i class="marble W"></i> White</span><span><i class="marble R"></i> Red</span><span><i class="marble B"></i> Black</span></p>
+        </li>
+        <li>
+          <h3>Your push</h3>
+          <p>On your turn you push a straight line of touching marbles one square, up, down, left, or right. The line can mix your own marbles with the other player's marbles and with reds, as long as those marbles are touching.</p>
+        </li>
+        <li>
+          <h3>Space behind you</h3>
+          <p>The marble you push from needs an empty square behind it, or it needs to sit on the edge, where the space behind it is off the board. If another marble is already in that square, that push is blocked and you choose a different one.</p>
+        </li>
+        <li>
+          <h3>Falling off</h3>
+          <p>If the marble at the front of the line is already on the edge, the push sends it off the board. A red scores one point for you when it falls, an opponent's marble leaves the game, and your own marble has to stay, so a push that would drop one of yours is illegal.</p>
+        </li>
+        <li>
+          <h3>Winning</h3>
+          <p>You win by collecting seven reds, by pushing off the other player's last marble, or when that player has no legal push left on their turn.</p>
+        </li>
+        <li>
+          <h3>Going back</h3>
+          <p>After the other player moves, your reply cannot put the board back to the position from immediately before that move. The ban lasts for that one reply, and any other push is fine.</p>
+        </li>
+        <li>
+          <h3>Start playing</h3>
+          <p>When you want to try a game, open Play and click one of your marbles. The legal pushes show up as dots, and clicking a dot plays that push. Kahu can take the other side, so you can learn the moves one at a time.</p>
+        </li>
+      </ol>
+      <p class="guide-cta"><button type="button" id="btn-guide-play" class="guide-go">Play a game</button></p>
+    </section>
   </main>
 
   <div id="pv-preview" class="pv-mini" hidden></div>
-  <script src="app.js?v=19"></script>
+  <script src="app.js?v=20"></script>
 </body>
 </html>
