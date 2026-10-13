@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kahu</title>
+  <link rel="stylesheet" href="style.css?v=17" />
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Kahu</h1>
+      <p class="sub">Kuba engine, in the browser</p>
+      <nav class="tabs" aria-label="Sections">
+        <button type="button" id="tab-play" class="tab" aria-selected="true">Play</button>
+        <button type="button" id="tab-puzzles" class="tab" aria-selected="false">Puzzles <span id="puzzle-tab-count" class="tab-count"></span></button>
+      </nav>
+    </div>
+    <div class="settings-wrap">
+      <button type="button" id="btn-settings" class="icon-btn" aria-label="Settings" aria-expanded="false" aria-controls="settings">
+        <svg class="cog" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" fill-rule="evenodd"
+            d="M9.3 5.49L10.52 2.67H13.48L14.7 5.49L17.55 4.35L19.65 6.45L18.51 9.3L21.33 10.52V13.48L18.51 14.7L19.65 17.55L17.55 19.65L14.7 18.51L13.48 21.33H10.52L9.3 18.51L6.45 19.65L4.35 17.55L5.49 14.7L2.67 13.48V10.52L5.49 9.3L4.35 6.45L6.45 4.35ZM12 8.75A3.25 3.25 0 1 0 12 15.25A3.25 3.25 0 1 0 12 8.75Z" />
+        </svg>
+      </button>
+      <div id="settings" class="settings" hidden>
+        <p class="k">Network</p>
+        <p id="nnue-name" class="nnue-name">C16_C12_blind.nnue</p>
+        <p id="nnue-info" class="info">Default</p>
+        <div class="row">
+          <button type="button" id="btn-nnue">Choose NNUE…</button>
+        </div>
+        <input id="nnue-file" type="file" accept=".nnue,application/octet-stream" hidden />
+        <p id="nnue-msg" class="nnue-msg" hidden></p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="eval-col" class="eval-col">
+      <div id="eval-bar" class="eval-bar" title="Evaluation (+1 = +500cp)">
+        <div id="eval-white" class="eval-white"></div>
+      </div>
+      <div id="eval-label" class="eval-label">0</div>
+    </div>
+
+    <section class="board-wrap">
+      <div id="board" class="board" aria-label="Kuba board"></div>
+    </section>
+
+    <aside>
+      <div id="play-panel">
+      <p id="status" class="status">Loading engine…</p>
+      <p id="caps">Reds — White 0 · Black 0</p>
+
+      <div class="row">
+        <label>White
+          <select id="w-player">
+            <option value="human">Human</option>
+            <option value="engine">Kahu</option>
+          </select>
+        </label>
+        <label>Black
+          <select id="b-player">
+            <option value="engine" selected>Kahu</option>
+            <option value="human">Human</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="row">
+        <label>Search
+          <input id="movetime" type="number" min="50" max="30000" step="50" value="1000" />
+          ms
+        </label>
+        <button type="button" id="btn-go">Engine move</button>
+      </div>
+
+      <div class="row">
+        <button type="button" id="btn-new">New game</button>
+        <button type="button" id="btn-undo">Undo</button>
+        <button type="button" id="btn-flip">Flip</button>
+      </div>
+      <div class="row">
+        <button type="button" id="btn-analyze">Analyze</button>
+        <button type="button" id="btn-infinite">Infinite</button>
+      </div>
+
+      <div class="pv-box">
+        <p class="k">Line</p>
+        <p id="pv" class="pv">—</p>
+        <p id="info" class="info">depth — · nodes —</p>
+      </div>
+
+      <div class="moves-box">
+        <p class="k">Moves</p>
+        <ol id="moves"></ol>
+      </div>
+
+      <label class="kfen-lab">KFEN
+        <input id="kfen" spellcheck="false" />
+      </label>
+      <button type="button" id="btn-set">Set position</button>
+      </div>
+
+      <div id="puzzle-panel" hidden>
+        <p id="puzzle-status" class="status" aria-live="polite"></p>
+        <p id="puzzle-caps"></p>
+        <div class="row">
+          <button type="button" id="btn-puzzle-retry">Retry</button>
+          <button type="button" id="btn-puzzle-hint">Hint</button>
+          <button type="button" id="btn-puzzle-solution">Solution</button>
+        </div>
+        <div class="row">
+          <button type="button" id="btn-puzzle-next">Next</button>
+          <button type="button" id="btn-puzzle-flip">Flip</button>
+        </div>
+        <div class="moves-box">
+          <p class="k">Moves</p>
+          <ol id="puzzle-moves"></ol>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div id="pv-preview" class="pv-mini" hidden></div>
+  <script src="app.js?v=19"></script>
+</body>
+</html>
